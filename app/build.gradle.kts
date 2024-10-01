@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
