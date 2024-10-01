@@ -5,7 +5,7 @@ import retrofit2.http.GET
 
 interface VideosApi {
 
-    @GET
+    @GET("categories")
     suspend fun getCategories(): List<VideosCategoryDto>
 
 }

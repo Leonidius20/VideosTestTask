@@ -1,6 +1,7 @@
 package io.github.leonidius20.videostesttask.features.videolist.view
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,7 +43,9 @@ private fun LoadedVideosListScreen(
     isRefreshInProgress: Boolean,
     refreshErrorMessage: String?,
 ) {
-    Text(
-        text = data.size.toString()
-    )
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Text(
+            text = data.size.toString()
+        )
+    }
 }
