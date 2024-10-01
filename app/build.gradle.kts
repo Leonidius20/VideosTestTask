@@ -17,6 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        resourceConfigurations.addAll(listOf("en"))
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -49,6 +51,11 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 }
 
@@ -85,7 +92,7 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.media3.common)
-    implementation(libs.media3.common.ktx)
+    // implementation(libs.media3.common.ktx)
     implementation(libs.media3.datasource)
     implementation(libs.media3.datasource.okhttp)
     implementation(libs.media3.exoplayer)

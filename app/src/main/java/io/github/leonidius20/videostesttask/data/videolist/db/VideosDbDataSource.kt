@@ -5,4 +5,8 @@ import javax.inject.Singleton
 
 @Singleton
 class VideosDbDataSource @Inject constructor() {
+
+    // expose Flow from Room
+    // Make DB the SSOT
+
 }
