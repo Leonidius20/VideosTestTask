@@ -1,15 +1,16 @@
 package io.github.leonidius20.videostesttask.data.videolist.network
 
-sealed interface NetworkResourceState<out T> {
+sealed interface NetworkResourceState {
 
-    data object Loading : NetworkResourceState<Nothing>
+    data object Loading : NetworkResourceState
 
     data class Error(
         val error: Throwable
-    ) : NetworkResourceState<Nothing>
+    ) : NetworkResourceState
 
-    data class Loaded<T>(
-        val data: T
-    ) : NetworkResourceState<T>
+    /**
+     * successfully loaded or load was not initiated
+     */
+    data object NotLoading : NetworkResourceState
 
 }

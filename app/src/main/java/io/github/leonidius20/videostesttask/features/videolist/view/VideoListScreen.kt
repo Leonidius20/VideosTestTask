@@ -1,6 +1,5 @@
 package io.github.leonidius20.videostesttask.features.videolist.view
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,8 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,7 +54,14 @@ private fun LoadedVideosListScreen(
     refreshErrorMessage: String?,
     // onclick
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             items(items = data, key = { video -> video.videoUrl }) { video ->
                 VideoListItem(
@@ -59,6 +69,19 @@ private fun LoadedVideosListScreen(
                     video = video,
                 )
             }
+        }
+    }
+
+    LaunchedEffect(key1 = isRefreshInProgress, key2 = refreshErrorMessage) {
+        val messageToShow =
+            if (isRefreshInProgress)
+                "Refreshing..."
+            else refreshErrorMessage // could be null
+
+        if (messageToShow != null) {
+            snackbarHostState.showSnackbar(
+                messageToShow
+            )
         }
     }
 }
