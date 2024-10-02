@@ -65,6 +65,8 @@ fun PlayerScreen() {
                         })
 
                         player.prepare()
+
+                        player.play()
                     }
                 }
             )
