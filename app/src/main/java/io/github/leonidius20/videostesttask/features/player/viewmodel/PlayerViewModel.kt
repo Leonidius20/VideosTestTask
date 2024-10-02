@@ -21,7 +21,7 @@ class PlayerViewModel @Inject constructor(
     repo: VideosRepository,
 ) : ViewModel() {
 
-    private val initialVideoUrl = savedStateHandle
+    val initialVideoUrl = savedStateHandle
         .toRoute<Destination.VideoPlayer>()
         .currentVideoUrl
 

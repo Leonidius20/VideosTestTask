@@ -13,7 +13,7 @@ data class VideoDto(
 ) {
 
     val fullThumbnailUrl
-            get() = "https://github.com/Leonidius20/VideosTestTask/tree/master/$thumb"
+            get() = "https://github.com/Leonidius20/VideosTestTask/tree/master/$thumb?raw=true"
 
     fun toDomainObject() = Video(
         title = title,

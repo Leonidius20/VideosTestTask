@@ -16,7 +16,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import io.github.leonidius20.videostesttask.features.player.viewmodel.PlayerViewModel
 
@@ -30,7 +32,13 @@ fun PlayerScreen() {
     val context = LocalContext.current
 
     val player = remember {
-        ExoPlayer.Builder(context).build()
+        ExoPlayer.Builder(context)
+            .build()
+            .apply {
+                setMediaSource(ProgressiveMediaSource.Factory(DefaultHttpDataSource.Factory()).createMediaSource(
+                    MediaItem.fromUri(viewModel.initialVideoUrl)
+                ))
+            }
     }
 
     Scaffold { innerPadding ->
@@ -42,8 +50,10 @@ fun PlayerScreen() {
                         setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
                         setPlayer(player)
 
-                        player.setMediaItems(state.value.videos.map { video ->
-                            MediaItem.Builder()
+
+                        //player.setMediaItems(state.value.videos.map { video ->
+                        //    MediaItem.fromUri(video.url)
+                            /*MediaItem.Builder()
                                 .setUri(video.url)
                                 .setMediaId(video.url)
                                 .setMediaMetadata(
@@ -51,8 +61,8 @@ fun PlayerScreen() {
                                         .setDisplayTitle(video.name)
                                         .build()
                                 )
-                                .build()
-                        })
+                                .build()*/
+                        //})
 
                         player.addListener(object : Player.Listener {
 
