@@ -8,6 +8,8 @@ sealed interface Destination {
     data object VideosList : Destination
 
     @Serializable
-    data object VideoPlayer : Destination
+    data class VideoPlayer(
+        val currentVideoUrl: String,
+    ) : Destination
 
 }

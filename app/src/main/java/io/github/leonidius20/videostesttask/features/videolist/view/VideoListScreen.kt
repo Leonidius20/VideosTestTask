@@ -24,7 +24,9 @@ import io.github.leonidius20.videostesttask.features.videolist.model.VideoListUi
 import io.github.leonidius20.videostesttask.features.videolist.viewmodel.VideoListViewModel
 
 @Composable
-fun VideoListScreen() {
+fun VideoListScreen(
+    onOpenVideo: (Video) -> Unit,
+) {
     val viewModel: VideoListViewModel = hiltViewModel()
 
     when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
@@ -44,8 +46,8 @@ fun VideoListScreen() {
                 data = state.data,
                 isRefreshInProgress = state.refreshInProgress,
                 refreshErrorMessage = state.refreshErrorMessage,
-                onItemClick = {
-                    // todo
+                onItemClick = { video ->
+                    onOpenVideo(video)
                 },
                 onRefresh = { viewModel.refresh() }
             )

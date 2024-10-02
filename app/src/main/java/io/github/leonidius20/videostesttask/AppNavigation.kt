@@ -15,7 +15,11 @@ fun AppNavigation() {
         startDestination = Destination.VideosList
     ) {
         composable<Destination.VideosList> {
-            VideoListScreen()
+            VideoListScreen(
+                onOpenVideo = { video ->
+                    navController.navigate(Destination.VideoPlayer(video.videoUrl))
+                }
+            )
         }
         composable<Destination.VideoPlayer> {
             PlayerScreen()
