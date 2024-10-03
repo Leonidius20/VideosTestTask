@@ -31,6 +31,7 @@ import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.leonidius20.videostesttask.features.player.screen.viewmodel.PlayerViewModel
 import io.github.leonidius20.videostesttask.features.player.service.PlaybackService
+import kotlinx.coroutines.delay
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -43,16 +44,16 @@ fun PlayerScreen() {
 
     val context = LocalContext.current
 
-    val player = remember {
+    /*val player = remember {
         ExoPlayer.Builder(context)
             .build()
-    }
+    }*/
 
     val playerView = remember {
         PlayerView(context).apply {
             setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
             // resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-            setPlayer(player)
+            // setPlayer(player)
 
             /*player.addListener(object : Player.Listener {
 
@@ -71,7 +72,7 @@ fun PlayerScreen() {
     if (videos.isNotEmpty()) {
         DisposableEffect(key1 = videos) {
 
-            /*val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
+            val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
             val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
 
             // todo: create it in a factory that accepts Context and turn this into coroutine
@@ -79,10 +80,23 @@ fun PlayerScreen() {
             controllerFuture.addListener({
                 val controller = controllerFuture.get()
 
+                playerView.player = controller
+                controller.setMediaItems(
+                    videos.map { video ->
+                        MediaItem.fromUri(video.url)
+                    }
+                )
+                controller.prepare()
+                controller.seekTo(
+                    videos.indexOfFirst { it.url == playingVideoUrl.value }, 0
+                )
+                controller.play()
 
-            }, MoreExecutors.directExecutor())*/
 
-            player.setMediaItems(
+
+            }, MoreExecutors.directExecutor())
+
+           /* player.setMediaItems(
                 videos.map { video ->
                     MediaItem.fromUri(video.url)
                 }
@@ -96,12 +110,18 @@ fun PlayerScreen() {
             )
 
 
-            player.play()
+            player.play()*/
 
 
             onDispose {
-                player.stop()
-                player.release()
+                if (controllerFuture.isDone) {
+                    controllerFuture.get().run {
+                        stop()
+                        release()
+                    }
+                }
+               /* player.stop()
+                player.release()*/
             }
         }
     }
