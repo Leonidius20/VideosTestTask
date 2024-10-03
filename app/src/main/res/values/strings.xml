@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideosTestTask</string>
+    <string name="retry">Retry</string>
 </resources>
