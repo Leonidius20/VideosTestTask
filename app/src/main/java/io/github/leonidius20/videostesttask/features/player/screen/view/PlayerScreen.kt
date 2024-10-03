@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -79,7 +80,9 @@ fun PlayerScreen() {
 
                     // this is the playlist
                     if (!isLandscape) {
-                        LazyColumn {
+                        val listState = rememberLazyListState()
+
+                        LazyColumn(state = listState) {
                             items(
                                 count = videos.size,
                                 key = { videos[it].url }) { videoIndex ->
@@ -89,6 +92,13 @@ fun PlayerScreen() {
                                     isSelected = video.url == playingVideoUrl.value
                                 )
                             }
+                        }
+
+                        LaunchedEffect(key1 = playingVideoUrl.value) {
+                            val playingItemIndex = videos.indexOfFirst {
+                                it.url == playingVideoUrl.value
+                            }
+                            listState.scrollToItem(playingItemIndex)
                         }
                     }
 
