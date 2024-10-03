@@ -1,4 +1,4 @@
-package io.github.leonidius20.videostesttask.features.player.viewmodel
+package io.github.leonidius20.videostesttask.features.player.screen.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -7,12 +7,10 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.leonidius20.videostesttask.Destination
 import io.github.leonidius20.videostesttask.data.videolist.VideosRepository
-import io.github.leonidius20.videostesttask.features.player.model.PlayerUiState
-import io.github.leonidius20.videostesttask.features.player.model.VideoUiState
+import io.github.leonidius20.videostesttask.features.player.screen.model.VideoUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject

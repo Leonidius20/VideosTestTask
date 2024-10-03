@@ -1,5 +1,6 @@
-package io.github.leonidius20.videostesttask.features.player.view
+package io.github.leonidius20.videostesttask.features.player.screen.view
 
+import android.content.ComponentName
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,9 +25,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import io.github.leonidius20.videostesttask.features.player.viewmodel.PlayerViewModel
+import com.google.common.util.concurrent.MoreExecutors
+import io.github.leonidius20.videostesttask.features.player.screen.viewmodel.PlayerViewModel
+import io.github.leonidius20.videostesttask.features.player.service.PlaybackService
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -45,10 +48,39 @@ fun PlayerScreen() {
             .build()
     }
 
+    val playerView = remember {
+        PlayerView(context).apply {
+            setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+            // resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            setPlayer(player)
+
+            /*player.addListener(object : Player.Listener {
+
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    mediaItem?.run {
+                        viewModel.notifyPlayingVideoChangedTo(mediaItem.localConfiguration!!.uri.toString())
+                    }
+                }
+
+            })*/
+        }
+    }
+
     // each time videos list changes, we re-set playlist
 
     if (videos.isNotEmpty()) {
         DisposableEffect(key1 = videos) {
+
+            /*val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
+            val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+
+            // todo: create it in a factory that accepts Context and turn this into coroutine
+
+            controllerFuture.addListener({
+                val controller = controllerFuture.get()
+
+
+            }, MoreExecutors.directExecutor())*/
 
             player.setMediaItems(
                 videos.map { video ->
@@ -81,7 +113,8 @@ fun PlayerScreen() {
                     .fillMaxWidth()
                     .aspectRatio(ratio = 16f / 9f),
                 factory = {
-                    PlayerView(context).apply {
+                    playerView
+                    /*PlayerView(context).apply {
                         setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
                         // resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                         setPlayer(player)
@@ -95,7 +128,7 @@ fun PlayerScreen() {
                             }
 
                         })
-                    }
+                    }*/
                 },
             )
 
