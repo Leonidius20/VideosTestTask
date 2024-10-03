@@ -1,4 +1,4 @@
-package io.github.leonidius20.videostesttask.features.videolist.view
+package io.github.leonidius20.videostesttask.features.common.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -28,7 +28,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerView
 import io.github.leonidius20.videostesttask.features.player.screen.model.PlayerUiState
 import io.github.leonidius20.videostesttask.features.player.screen.viewmodel.PlayerViewModel
-import io.github.leonidius20.videostesttask.features.videolist.view.LoadingScreen
+import io.github.leonidius20.videostesttask.features.common.view.LoadingScreen
 
 @OptIn(UnstableApi::class)
 @Composable

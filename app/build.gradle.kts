@@ -93,7 +93,6 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.media3.common)
-    // implementation(libs.media3.common.ktx)
     implementation(libs.media3.datasource)
     implementation(libs.media3.datasource.okhttp)
     implementation(libs.media3.exoplayer)
@@ -101,4 +100,7 @@ dependencies {
     implementation(libs.media3.session)
 
     implementation(libs.kotlin.serialization.json) // for navigation destinations
+
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 }
