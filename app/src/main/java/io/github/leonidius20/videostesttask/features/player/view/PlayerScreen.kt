@@ -13,6 +13,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -45,8 +46,10 @@ fun PlayerScreen() {
     }
 
     // each time videos list changes, we re-set playlist
-    LaunchedEffect(key1 = videos) {
-        if (videos.isNotEmpty()) {
+
+    if (videos.isNotEmpty()) {
+        DisposableEffect(key1 = videos) {
+
             player.setMediaItems(
                 videos.map { video ->
                     MediaItem.fromUri(video.url)
@@ -62,13 +65,21 @@ fun PlayerScreen() {
 
 
             player.play()
+
+
+            onDispose {
+                player.stop()
+                player.release()
+            }
         }
     }
 
     Scaffold { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
             AndroidView(
-                modifier = Modifier.fillMaxWidth().aspectRatio(ratio = 16f / 9f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(ratio = 16f / 9f),
                 factory = {
                     PlayerView(context).apply {
                         setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
@@ -88,9 +99,8 @@ fun PlayerScreen() {
                 },
             )
 
-
             // this is the playlist
-            LazyColumn(modifier = Modifier) {
+            LazyColumn {
                 items(
                     count = videos.size,
                     key = { videos[it].url }) { videoIndex ->
