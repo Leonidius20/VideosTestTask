@@ -1,13 +1,14 @@
 package io.github.leonidius20.videostesttask.features.player.view
 
 import androidx.annotation.OptIn
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -29,18 +31,19 @@ import io.github.leonidius20.videostesttask.features.player.viewmodel.PlayerView
 fun PlayerScreen() {
     val viewModel: PlayerViewModel = hiltViewModel()
 
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val videos = viewModel.videos.collectAsStateWithLifecycle().value
+
+    val playingVideoUrl = viewModel.playingVideoUrl.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
     val player = remember {
-            ExoPlayer.Builder(context)
-                .build()
+        ExoPlayer.Builder(context)
+            .build()
     }
 
     // each time videos list changes, we re-set playlist
-    LaunchedEffect(key1 = state.value) {
-        val videos = state.value.videos
+    LaunchedEffect(key1 = videos) {
 
         player.setMediaItems(
             videos.map { video ->
@@ -52,7 +55,7 @@ fun PlayerScreen() {
         // seeking to the video that should be playing
         if (videos.isNotEmpty()) {
             player.seekTo(
-                videos.indexOfFirst { it.isPlaying }, 0
+                videos.indexOfFirst { it.url == playingVideoUrl.value }, 0
             )
         }
 
@@ -68,19 +71,15 @@ fun PlayerScreen() {
                         setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
                         setPlayer(player)
 
-                        /*player.addListener(object : Player.Listener {
+                        player.addListener(object : Player.Listener {
 
                             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                                 mediaItem?.run {
-                                    viewModel.onVideoChangedTo(mediaItem.mediaId)
+                                    viewModel.notifyPlayingVideoChangedTo(mediaItem.localConfiguration!!.uri.toString())
                                 }
                             }
 
-                        })*/
-
-                        //player.prepare()
-
-                        // player.play()
+                        })
                     }
                 },
             )
@@ -88,12 +87,13 @@ fun PlayerScreen() {
 
             // this is the playlist
             LazyColumn {
-                items(count = state.value.videos.size, key = { state.value.videos[it].url }) { videoIndex ->
-                    val video = state.value.videos[videoIndex]
+                items(
+                    count = videos.size,
+                    key = { videos[it].url }) { videoIndex ->
+                    val video = videos[videoIndex]
                     PlaylistItem(
                         title = video.name,
-                        // todo: replace with state saved in viewmodel and updated by listener, do not use the combined state
-                        isSelected = player.currentMediaItemIndex == videoIndex
+                        isSelected = video.url == playingVideoUrl.value
                     )
                 }
             }
@@ -109,8 +109,13 @@ private fun PlaylistItem(
     isSelected: Boolean,
 ) {
     ListItem(
-        modifier = if (isSelected) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier,
         headlineContent = {
-        Text(text = title)
-    })
+            Text(text = title)
+        },
+        leadingContent = {
+            if (isSelected) {
+                Icon(Icons.Default.PlayArrow, contentDescription = "Playing video indicator")
+            }
+        }
+    )
 }

@@ -11,7 +11,9 @@ import io.github.leonidius20.videostesttask.features.player.model.PlayerUiState
 import io.github.leonidius20.videostesttask.features.player.model.VideoUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -21,13 +23,23 @@ class PlayerViewModel @Inject constructor(
     repo: VideosRepository,
 ) : ViewModel() {
 
-    val initialVideoUrl = savedStateHandle
+    private val initialVideoUrl = savedStateHandle
         .toRoute<Destination.VideoPlayer>()
         .currentVideoUrl
 
-    private val playingVideoUrl = MutableStateFlow(initialVideoUrl)
+    val playingVideoUrl = MutableStateFlow(initialVideoUrl)
 
-    val state = combine(repo.videos, playingVideoUrl) { list, playingUrl ->
+    val videos: StateFlow<ArrayList<VideoUiState>> = repo.videos.map { list ->
+        list.mapTo(ArrayList(list.size)) { video ->
+            VideoUiState(
+                url = video.videoUrl,
+                name = video.title,
+            )
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ArrayList())
+
+
+  /*  val state = combine(repo.videos, playingVideoUrl) { list, playingUrl ->
         PlayerUiState(
             videos = list.mapTo(ArrayList(list.size)) { video ->
                 VideoUiState(
@@ -38,26 +50,8 @@ class PlayerViewModel @Inject constructor(
             }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerUiState.defaultValue())
-
-    /*fun onMovedToNextVideo() {
-        val videos = state.value.videos
-        val playingVideoIndex = videos.indexOfFirst { it.isPlaying }
-        val nextIndex = playingVideoIndex + 1
-        if (nextIndex < videos.size) {
-            playingVideoUrl.value = videos[nextIndex].url
-        }
-    }
-
-    fun onMovedToPrevVideo() {
-        val videos = state.value.videos
-        val playingVideoIndex = videos.indexOfFirst { it.isPlaying }
-        val nextIndex = playingVideoIndex - 1
-        if (nextIndex >= 0) {
-            playingVideoUrl.value = videos[nextIndex].url
-        }
-    }*/
-
-    fun onVideoChangedTo(url: String) {
+*/
+    fun notifyPlayingVideoChangedTo(url: String) {
         playingVideoUrl.value = url
     }
 }

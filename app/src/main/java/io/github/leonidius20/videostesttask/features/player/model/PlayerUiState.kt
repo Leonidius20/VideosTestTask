@@ -12,6 +12,6 @@ data class PlayerUiState(
 
 data class VideoUiState(
     val url: String,
-    val isPlaying: Boolean,
+   // val isPlaying: Boolean,
     val name: String,
 )

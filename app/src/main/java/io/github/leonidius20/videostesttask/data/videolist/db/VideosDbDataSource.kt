@@ -16,7 +16,7 @@ class VideosDbDataSource @Inject constructor(
 
     private val dao = db.videosDao()
 
-    val videos = dao.getVideos().map { list ->
+    val videos = dao.getVideosFlow().map { list ->
         list.map { it.toDomainObject() }
     }
 
@@ -50,9 +50,5 @@ class VideosDbDataSource @Inject constructor(
             dao.insertAll(dataMapped)
         }
     }
-
-    /*suspend fun isCacheEmpty(): Boolean {
-        return dao.cacheDate() == null
-    }*/
 
 }

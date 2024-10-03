@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface VideosDao {
 
     @Query("select * from videos")
-    fun getVideos(): Flow<List<VideoEntity>>
+    fun getVideosFlow(): Flow<List<VideoEntity>>
 
     /**
      * @return null if the cache is empty
