@@ -2,6 +2,7 @@ package io.github.leonidius20.videostesttask.features.player.view
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import io.github.leonidius20.videostesttask.features.player.viewmodel.PlayerViewModel
 
@@ -44,31 +46,33 @@ fun PlayerScreen() {
 
     // each time videos list changes, we re-set playlist
     LaunchedEffect(key1 = videos) {
-
-        player.setMediaItems(
-            videos.map { video ->
-                MediaItem.fromUri(video.url)
-            }
-        )
-        player.prepare()
-
-        // seeking to the video that should be playing
         if (videos.isNotEmpty()) {
+            player.setMediaItems(
+                videos.map { video ->
+                    MediaItem.fromUri(video.url)
+                }
+            )
+            player.prepare()
+
+            // seeking to the video that should be playing
+
             player.seekTo(
                 videos.indexOfFirst { it.url == playingVideoUrl.value }, 0
             )
-        }
 
-        player.play()
+
+            player.play()
+        }
     }
 
     Scaffold { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
             AndroidView(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().aspectRatio(ratio = 16f / 9f),
                 factory = {
                     PlayerView(context).apply {
                         setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                        // resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                         setPlayer(player)
 
                         player.addListener(object : Player.Listener {
@@ -86,7 +90,7 @@ fun PlayerScreen() {
 
 
             // this is the playlist
-            LazyColumn {
+            LazyColumn(modifier = Modifier) {
                 items(
                     count = videos.size,
                     key = { videos[it].url }) { videoIndex ->
