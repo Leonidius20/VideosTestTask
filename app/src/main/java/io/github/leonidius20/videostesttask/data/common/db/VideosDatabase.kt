@@ -10,7 +10,7 @@ import io.github.leonidius20.videostesttask.data.videolist.db.entity.VideoEntity
         VideoEntity::class,
     ],
     version = 1,
-    exportSchema = true,
+    exportSchema = false,
 )
 abstract class VideosDatabase : RoomDatabase() {
 
