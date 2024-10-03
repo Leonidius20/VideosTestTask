@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +45,7 @@ fun PlayerScreen() {
 
     val context = LocalContext.current
 
+
     /*val player = remember {
         ExoPlayer.Builder(context)
             .build()
@@ -67,9 +69,27 @@ fun PlayerScreen() {
         }
     }
 
+    if (videos.isNotEmpty()) {
+        LaunchedEffect(key1 = true) {
+            viewModel.getPlayer().apply {
+                setMediaItems(
+                    videos.map { video ->
+                        MediaItem.fromUri(video.url)
+                    }
+                )
+                prepare()
+                seekTo(
+                    videos.indexOfFirst { it.url == playingVideoUrl.value }, 0
+                )
+                play()
+            }.also { playerView.player = it }
+        }
+    }
+
+
     // each time videos list changes, we re-set playlist
 
-    if (videos.isNotEmpty()) {
+    /*if (videos.isNotEmpty()) {
         DisposableEffect(key1 = videos) {
 
             val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
@@ -124,7 +144,7 @@ fun PlayerScreen() {
                 player.release()*/
             }
         }
-    }
+    }*/
 
     Scaffold { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
@@ -160,6 +180,7 @@ fun PlayerScreen() {
                     val video = videos[videoIndex]
                     PlaylistItem(
                         title = video.name,
+                        // todo: player.getMediaItemAt(index), index == currentPlayingItemIndex
                         isSelected = video.url == playingVideoUrl.value
                     )
                 }
