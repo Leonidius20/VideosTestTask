@@ -1,5 +1,6 @@
 package io.github.leonidius20.videostesttask.features.player.screen.view
 
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +36,7 @@ fun PlayerScreen() {
 
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    when(val currentState = state.value) {
+    when (val currentState = state.value) {
         is PlayerUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
         is PlayerUiState.Loaded -> {
 
@@ -58,26 +60,35 @@ fun PlayerScreen() {
 
             Scaffold { innerPadding ->
                 Column(Modifier.padding(innerPadding)) {
-                    AndroidView(
-                        modifier = Modifier
+                    val isLandscape =
+                        LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+
+                    val playerModifier =
+                        if (isLandscape)
+                            Modifier.fillMaxSize()
+                        else Modifier
                             .fillMaxWidth()
-                            .aspectRatio(ratio = 16f / 9f),
+                            .aspectRatio(ratio = 16f / 9f)
+
+                    AndroidView(
+                        modifier = playerModifier,
                         factory = {
                             playerView
                         },
                     )
 
                     // this is the playlist
-                    LazyColumn {
-                        items(
-                            count = videos.size,
-                            key = { videos[it].url }) { videoIndex ->
-                            val video = videos[videoIndex]
-                            PlaylistItem(
-                                title = video.name,
-                                // todo: player.getMediaItemAt(index), index == currentPlayingItemIndex
-                                isSelected = video.url == playingVideoUrl.value
-                            )
+                    if (!isLandscape) {
+                        LazyColumn {
+                            items(
+                                count = videos.size,
+                                key = { videos[it].url }) { videoIndex ->
+                                val video = videos[videoIndex]
+                                PlaylistItem(
+                                    title = video.name,
+                                    isSelected = video.url == playingVideoUrl.value
+                                )
+                            }
                         }
                     }
 

@@ -12,7 +12,6 @@ import io.github.leonidius20.videostesttask.data.videolist.VideosRepository
 import io.github.leonidius20.videostesttask.features.player.screen.model.PlayerUiState
 import io.github.leonidius20.videostesttask.features.player.screen.model.VideoUiState
 import io.github.leonidius20.videostesttask.features.player.service.PlayerFactory
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -58,33 +57,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    /*val videos: StateFlow<ArrayList<VideoUiState>> = repo.videos.map { list ->
-        list.mapTo(ArrayList(list.size)) { video ->
-            VideoUiState(
-                url = video.videoUrl,
-                name = video.title,
-            )
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ArrayList())
-    */
-
-    /*  val state = combine(repo.videos, playingVideoUrl) { list, playingUrl ->
-          PlayerUiState(
-              videos = list.mapTo(ArrayList(list.size)) { video ->
-                  VideoUiState(
-                      url = video.videoUrl,
-                      name = video.title,
-                      isPlaying = video.videoUrl == playingUrl,
-                  )
-              }
-          )
-      }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerUiState.defaultValue())
-  */
     private fun notifyPlayingVideoChangedTo(url: String) {
         playingVideoUrl.value = url
     }
-
-    //private var player: Player? = null
 
     private suspend fun getPlayer(
         videos: List<VideoUiState>,
@@ -110,8 +85,7 @@ class PlayerViewModel @Inject constructor(
             seekTo(
                 videos.indexOfFirst { it.url == currentVideoUrl }, 0
             )
-            //play()
-        }//.also { player = it }
+        }
     }
 
     override fun onCleared() {
